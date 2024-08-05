@@ -1,0 +1,33 @@
+#define ll long long
+int mod = 1e9 + 7;
+    ll hashvalue(string s, ll radix, ll m){
+        ll mul = 1;
+        ll ans = 0;
+        for(int i = m - 1; i >= 0; i--){
+            ans += ((s[i] - 'a') * mul) % mod;
+            mul = (mul * radix) % mod;
+        }
+        return ans % mod;
+    }
+
+    int rabinkarp(string big, string small){
+        int n = big.size(), m = small.size();
+        ll radix = 26;
+        ll value = hashvalue(small, radix, m);
+        ll maxx = 1;
+        for(int i = 0; i < m; i++){
+            maxx = (maxx * radix) % mod;
+        }
+        ll curr = 0;
+        for(int i = 0; i <= n - m; i++){
+            if(i == 0){
+                curr = hashvalue(big, radix, m);
+                if(curr == value) return i;
+            }
+            else{
+                curr = ((curr * radix) % mod - ((big[i - 1] - 'a') * maxx) % mod + (big[i + m - 1] - 'a') % mod + mod) % mod;
+            }
+            if(curr == value) return i;
+        }
+        return -1;
+    }
